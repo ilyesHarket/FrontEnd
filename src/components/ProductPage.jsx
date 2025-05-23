@@ -1,32 +1,41 @@
 import { useParams } from "react-router-dom";
-import { useProducts } from "../ProductsContext";
+import { useState, useEffect } from "react";
 
 export default function ProductPage() {
   const { productId } = useParams();
-  const { getProductById } = useProducts();
-  const product = getProductById(productId);
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  if (!product) {
-    return <div className="product-not-found">Product not found</div>;
-  }
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await fetch(
+          `http://127.0.0.1:3001/api/v1/products/${productId}`
+        );
+        if (!response.ok) {
+          throw new Error("Product not found");
+        }
+        const data = await response.json();
+        setProduct(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProduct();
+  }, [productId]);
+
+  if (loading) return <div>Loading product...</div>;
+  if (error) return <div>Error: {error}</div>;
+  if (!product) return <div>Product not found</div>;
 
   return (
     <div className="product-page">
       <h1>{product.name}</h1>
-      <div className="product-content">
-        <div className="product-image">
-          <div className="image-placeholder"></div>
-        </div>
-        <div className="product-details">
-          <p className="price">${product.price.toFixed(2)}</p>
-          <p className="category">Category: {product.category}</p>
-          <button className="add-to-cart">Add to cart</button>
-          <div className="description-section">
-            <h3>Description</h3>
-            <p className="description">{product.description}</p>
-          </div>
-        </div>
-      </div>
+      {/* Rest of your product page */}
     </div>
   );
 }

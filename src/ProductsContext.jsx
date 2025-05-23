@@ -1,37 +1,42 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 const ProductsContext = createContext();
 
 export function ProductsProvider({ children }) {
-  const products = [
-    {
-      id: 1,
-      name: "Smartphone",
-      price: 599.99,
-      category: "electronics",
-      description: "Latest smartphone with advanced features",
-    },
-    // ... other products
-    { id: 2, name: "Laptop", price: 999.99, category: "electronics" },
-    { id: 3, name: "Headphones", price: 149.99, category: "electronics" },
-    { id: 4, name: "T-Shirt", price: 19.99, category: "clothing" },
-    { id: 5, name: "Jeans", price: 49.99, category: "clothing" },
-    { id: 6, name: "Running Shoes", price: 89.99, category: "shoes" },
-    { id: 7, name: "Handbag", price: 129.99, category: "bags" },
-    { id: 8, name: "Novel", price: 14.99, category: "books" },
-    { id: 9, name: "Chair", price: 199.99, category: "furniture" },
-    { id: 10, name: "Moisturizer", price: 24.99, category: "beauty" },
-  ];
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const getProductById = (id) => products.find((p) => p.id === Number(id));
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:3001/api/v1/products/");
+        const data = await response.json();
+        setProducts(data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  const getProductById = (id) => {
+    return products.find((p) => p.id === Number(id));
+  };
 
   return (
-    <ProductsContext.Provider value={{ products, getProductById }}>
+    <ProductsContext.Provider value={{ products, loading, getProductById }}>
       {children}
     </ProductsContext.Provider>
   );
 }
 
 export function useProducts() {
-  return useContext(ProductsContext);
+  const context = useContext(ProductsContext);
+  if (!context) {
+    throw new Error("useProducts must be used within a ProductsProvider");
+  }
+  return context;
 }

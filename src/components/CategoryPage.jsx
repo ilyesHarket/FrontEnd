@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function CategoryPage() {
   const [categories, setCategories] = useState([]);
@@ -10,7 +10,7 @@ export default function CategoryPage() {
     const fetchCategories = async () => {
       try {
         const response = await fetch(
-          "http://127.0.0.1:3001/api/v1/categories/"
+          "http://localhost:3001/api/v1/categories/"
         );
         if (!response.ok) {
           throw new Error("Failed to fetch categories");
@@ -19,6 +19,7 @@ export default function CategoryPage() {
         setCategories(data);
       } catch (err) {
         setError(err.message);
+        console.error("Error fetching categories:", err);
       } finally {
         setLoading(false);
       }
@@ -27,20 +28,22 @@ export default function CategoryPage() {
     fetchCategories();
   }, []);
 
-  if (loading) return <div>Loading categories...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (loading)
+    return <div className="loading-spinner">Loading categories...</div>;
+  if (error) return <div className="error-message">Error: {error}</div>;
 
   return (
     <div className="category-page">
-      <h2>Shop by category</h2>
+      <h1>Shop by Category</h1>
       <div className="category-grid">
-        {categories.map((category, index) => (
+        {categories.map((category) => (
           <Link
-            to={`/category/${category.toLowerCase()}`}
-            key={index}
+            to={`/category/${category.id}/${category.name.toLowerCase()}`}
+            key={category.id}
             className="category-card"
           >
-            {category.charAt(0).toUpperCase() + category.slice(1)}
+            <h3>{category.name}</h3>
+            <p>{category.description || "Explore products"}</p>
           </Link>
         ))}
       </div>
