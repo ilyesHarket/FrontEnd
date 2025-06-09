@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 
 export default function ProductList() {
-  const { categoryId, categoryName } = useParams();
+  const { id, name } = useParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -12,7 +12,7 @@ export default function ProductList() {
     const fetchProducts = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3001/api/v1/products/by-category/${categoryId}`
+          `http://localhost:3001/api/v1/products/by-category/${id}`
         );
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -30,7 +30,7 @@ export default function ProductList() {
     };
 
     fetchProducts();
-  }, [categoryId, navigate]);
+  }, [id, navigate]);
 
   if (loading)
     return <div className="loading-spinner">Loading products...</div>;
@@ -39,9 +39,7 @@ export default function ProductList() {
   return (
     <div className="product-list">
       <h2>
-        {categoryName
-          ? categoryName.charAt(0).toUpperCase() + categoryName.slice(1)
-          : "Products"}
+        {name ? name.charAt(0).toUpperCase() + name.slice(1) : "Products"}
       </h2>
       {products.length > 0 ? (
         <div className="products-grid">
