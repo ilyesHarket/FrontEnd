@@ -1,42 +1,212 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+body {
+  background: #f4f6fa;
+  font-family: 'Inter', Arial, sans-serif;
+  margin: 0;
+  color: #1a2236;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 48px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 
 .logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #2563eb;
+  text-decoration: none;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.nav {
+  display: flex;
+  gap: 36px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.nav a {
+  text-decoration: none;
+  color: #374151;
+  font-weight: 500;
+  font-size: 1.08rem;
+  transition: color 0.2s;
 }
 
-.card {
-  padding: 2em;
+.nav a:hover {
+  color: #2563eb;
 }
 
-.read-the-docs {
-  color: #888;
+.product-card {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 32px rgba(37,99,235,0.09);
+  padding: 24px 16px;
+  text-align: center;
+  min-width: 220px;
+  transition: box-shadow 0.2s, transform 0.2s;
+  border: 1.5px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
+
+.product-card:hover {
+  box-shadow: 0 8px 40px rgba(37,99,235,0.16);
+  transform: translateY(-6px) scale(1.04);
+  border-color: #2563eb;
+}
+
+.product-card img {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  margin-bottom: 12px;
+}
+
+.product-card button {
+  margin-top: 14px;
+  padding: 10px 24px;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+}
+
+.product-card button:hover {
+  background: #1d4ed8;
+  transform: scale(1.05);
+}
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 70vh;
+}
+
+.login-form {
+  background: #fff;
+  padding: 40px 32px;
+  border-radius: 16px;
+  box-shadow: 0 4px 32px rgba(37,99,235,0.10);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 320px;
+}
+
+.login-form h2 {
+  text-align: center;
+  color: #2563eb;
+  margin-bottom: 12px;
+}
+
+.login-form input {
+  padding: 12px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.login-form input:focus {
+  border-color: #2563eb;
+  outline: none;
+}
+
+.login-form button {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  padding: 12px 0;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.login-form button:hover {
+  background: #1d4ed8;
+}
+
+.login-message {
+  text-align: center;
+  margin-top: 10px;
+  padding: 8px 0;
+  border-radius: 6px;
+  font-size: 1rem;
+  color: #e11d48;
+  background: #fee2e2;
+}
+
+.register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 70vh;
+}
+
+.register-form {
+  background: #fff;
+  padding: 40px 32px;
+  border-radius: 16px;
+  box-shadow: 0 4px 32px rgba(37,99,235,0.10);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 320px;
+}
+
+.register-form h2 {
+  text-align: center;
+  color: #2563eb;
+  margin-bottom: 12px;
+}
+
+.register-form input {
+  padding: 12px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.register-form input:focus {
+  border-color: #2563eb;
+  outline: none;
+}
+
+.register-form button {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  padding: 12px 0;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.register-form button:hover {
+  background: #1d4ed8;
+}
+
+.register-message {
+  text-align: center;
+  margin-top: 10px;
+  padding: 8px 0;
+  border-radius: 6px;
+  font-size: 1rem;
+  color: #2563eb;
+  background: #dcfce7;
+}
+
+

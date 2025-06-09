@@ -4,6 +4,8 @@ import ProductPage from "./components/ProductPage";
 import { Route, Routes } from "react-router-dom";
 import CategoryPage from "./components/CategoryPage";
 import ProductList from "./components/productList";
+import Login from "./Login";
+import Register from "./Register";
 
 function App() {
   return (
@@ -14,6 +16,8 @@ function App() {
           <Route path="/product/:productId" element={<ProductPage />} />
           <Route path="/" element={<CategoryPage />} />
           <Route path="/category/:category" element={<ProductList />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
         </Routes>
       </div>
     </>
