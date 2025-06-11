@@ -10,8 +10,8 @@ function Panier() {
     axios
       .get("http://localhost:3001/api/v1/cart", {
         auth: {
-          username: "admin",
-          password: "admin",
+          username: "admin", // à adapter selon ton utilisateur
+          password: "admin", // à adapter selon ton mot de passe
         },
       })
       .then((response) => {
@@ -25,6 +25,9 @@ function Panier() {
       });
   }, []);
 
+  // Calcul du total du panier
+  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
   if (loading) return <div>Chargement du panier...</div>;
   if (error) return <div>{error}</div>;
 
@@ -34,15 +37,18 @@ function Panier() {
       {cart.length === 0 ? (
         <p>Votre panier est vide</p>
       ) : (
-        <ul>
-          {cart.map((item) => (
-            <li key={item.productId}>
-              <span>{item.productName}</span>
-              <span>Quantité : {item.quantity}</span>
-              <span>Prix : {item.price.toFixed(2)} €</span>
-            </li>
-          ))}
-        </ul>
+        <>
+          <ul>
+            {cart.map((item) => (
+              <li key={item.productId}>
+                <span>{item.productName}</span>
+                <span>Quantité : {item.quantity}</span>
+                <span>Prix : {item.price.toFixed(2)} €</span>
+              </li>
+            ))}
+          </ul>
+          <h3>Total : {total.toFixed(2)} €</h3>
+        </>
       )}
     </div>
   );
