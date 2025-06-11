@@ -9,22 +9,14 @@ const Navbar = () => (
       </Link>
     </div>
     <div className="navbar-center">
-      <input
-        className="search-bar"
-        type="text"
-        placeholder="Rechercher un produit..."
-      />
+      <Link to="/categories">Catégories</Link>
     </div>
     <div className="navbar-right">
-      <Link to="/">Accueil</Link>
-      <Link to="/categories">Catégories</Link>
-      <Link to="/about">À propos</Link>
-      <Link to="/contact">Contact</Link>
-      <Link to="/cart" className="icon-link" title="Panier">
-        <FaShoppingCart />
+      <Link to="/panier" className="nav-link">
+        <FaShoppingCart /> Panier
       </Link>
-      <Link to="/login" className="icon-link" title="Compte">
-        <FaUser />
+      <Link to="/login" className="nav-link">
+        <FaUser /> Connexion
       </Link>
     </div>
   </nav>

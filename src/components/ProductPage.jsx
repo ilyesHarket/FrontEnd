@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
+import axios from "axios";
 
 export default function ProductPage() {
   const { productId } = useParams();
@@ -24,18 +25,37 @@ export default function ProductPage() {
         setLoading(false);
       }
     };
-
     fetchProduct();
   }, [productId]);
 
-  if (loading) return <div>Loading product...</div>;
-  if (error) return <div>Error: {error}</div>;
-  if (!product) return <div>Product not found</div>;
+  // Fonction pour ajouter au panier
+  const addToCart = async () => {
+    try {
+      await axios.post("http://localhost:3001/api/v1/cart/add", {
+        productId: product.id,
+        productName: product.name,
+        price: product.price,
+        quantity: 1,
+      });
+      alert("Produit ajouté au panier !");
+    } catch (error) {
+      console.error(error);
+      alert("Erreur lors de l'ajout au panier");
+    }
+  };
+
+  if (loading) return <div>Chargement...</div>;
+  if (error) return <div>{error}</div>;
+  if (!product) return <div>Produit non trouvé</div>;
 
   return (
     <div className="product-page">
-      <h1>{product.name}</h1>
-      {/* Rest of your product page */}
+      <h2>{product.name}</h2>
+      <p>Prix : {product.price.toFixed(2)} €</p>
+      <p>{product.description || "Pas de description disponible."}</p>
+      <button onClick={addToCart} className="add-to-cart">
+        Ajouter au panier
+      </button>
     </div>
   );
 }

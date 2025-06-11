@@ -6,6 +6,7 @@ import ProductList from "./components/ProductList";
 import ProductPage from "./components/ProductPage";
 import Login from "./Login";
 import Register from "./Register";
+import Panier from "./components/Panier";
 import "./App.css"; // CSS global (navbar, footer, produits, etc.)
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
           <Route path="/product/:productId" element={<ProductPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/panier" element={<Panier />} />
           {/* Ajoute d'autres routes ici si besoin */}
         </Routes>
       </main>

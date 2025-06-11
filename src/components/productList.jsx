@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function ProductList() {
-  const { id, name } = useParams();
+  const { id } = useParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -22,51 +23,58 @@ export default function ProductList() {
       } catch (err) {
         setError(err.message);
         console.error("Error fetching products:", err);
-        // Redirect to categories page if there's an error
         navigate("/categories");
       } finally {
         setLoading(false);
       }
     };
-
     fetchProducts();
   }, [id, navigate]);
 
-  if (loading)
-    return <div className="loading-spinner">Loading products...</div>;
-  if (error) return <div className="error-message">Error: {error}</div>;
+  // Fonction pour ajouter au panier avec authentification Basic
+  const addToCart = async (product) => {
+    try {
+      await axios.post(
+        "http://localhost:3001/api/v1/cart/add",
+        {
+          productId: product.id,
+          productName: product.name,
+          price: product.price,
+          quantity: 1,
+        },
+        {
+          auth: {
+            username: "admin", // remplace par ton login
+            password: "admin", // remplace par ton mot de passe
+          },
+        }
+      );
+      alert("Produit ajouté au panier !");
+    } catch (error) {
+      console.error(error);
+      alert("Erreur lors de l'ajout au panier");
+    }
+  };
+
+  if (loading) return <div>Chargement...</div>;
+  if (error) return <div>{error}</div>;
+  if (products.length === 0)
+    return <div>Aucun produit trouvé dans cette catégorie.</div>;
 
   return (
-    <div className="product-list">
-      <h2>
-        {name ? name.charAt(0).toUpperCase() + name.slice(1) : "Products"}
-      </h2>
-      {products.length > 0 ? (
-        <div className="products-grid">
-          {products.map((product) => (
-            <div key={product.id} className="product-card">
-              <Link to={`/product/${product.id}`}>
-                <h3>{product.name}</h3>
-                <p className="price">${product.price.toFixed(2)}</p>
-                <p className="description">
-                  {product.description || "No description available"}
-                </p>
-                <div className="image-placeholder">
-                  {/* Replace with actual image when available */}
-                  <span>Product Image</span>
-                </div>
-              </Link>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div className="no-products">
-          <p>No products found in this category.</p>
-          <button onClick={() => navigate("/categories")}>
-            Back to Categories
+    <div className="products-grid">
+      {products.map((product) => (
+        <div key={product.id} className="product-card">
+          <Link to={`/product/${product.id}`}>
+            <h3>{product.name}</h3>
+            <p>Prix : {product.price.toFixed(2)} €</p>
+            <p>{product.description || "Pas de description disponible."}</p>
+          </Link>
+          <button onClick={() => addToCart(product)} className="add-to-cart">
+            Ajouter au panier
           </button>
         </div>
-      )}
+      ))}
     </div>
   );
 }
