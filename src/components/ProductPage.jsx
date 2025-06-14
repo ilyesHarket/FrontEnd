@@ -36,7 +36,12 @@ export default function ProductPage() {
         productName: product.name,
         price: product.price,
         quantity: 1,
-      });
+      }, {
+          auth: {
+            username: "admin", // remplace par ton login
+            password: "admin", // remplace par ton mot de passe
+          },
+        });
       alert("Produit ajouté au panier !");
     } catch (error) {
       console.error(error);
