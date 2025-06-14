@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Box,
   Table,
@@ -121,7 +122,18 @@ function Panier() {
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                   >
                     <TableCell component="th" scope="row">
-                      {item.productName}
+                      <Link 
+                        to={`/product/${item.productId}`}
+                        style={{ 
+                          textDecoration: 'none', 
+                          color: 'inherit',
+                          '&:hover': {
+                            textDecoration: 'underline'
+                          }
+                        }}
+                      >
+                        {item.productName}
+                      </Link>
                     </TableCell>
                     <TableCell align="right">
                       ${item.price.toFixed(2)}
