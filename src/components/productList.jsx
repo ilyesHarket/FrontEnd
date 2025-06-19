@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../api";
+import { useAuth } from "../AuthContext";
 
 export default function ProductList() {
   const { id } = useParams();
@@ -8,6 +9,7 @@ export default function ProductList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -31,22 +33,16 @@ export default function ProductList() {
     fetchProducts();
   }, [id, navigate]);
 
-  // Fonction pour ajouter au panier avec authentification Basic
+  // Fonction pour ajouter au panier avec authentification JWT
   const addToCart = async (product) => {
     try {
-      await axios.post(
-        "http://localhost:3001/api/v1/cart/add",
+      await api.post(
+        "/api/v1/cart/add",
         {
           productId: product.id,
           productName: product.name,
           price: product.price,
-          quantity: 1,
-        },
-        {
-          auth: {
-            username: "admin", // remplace par ton login
-            password: "admin", // remplace par ton mot de passe
-          },
+          quantity: 1
         }
       );
       alert("Produit ajouté au panier !");

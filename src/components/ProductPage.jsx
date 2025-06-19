@@ -1,12 +1,14 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../api";
+import { useAuth } from "../AuthContext";
 
 export default function ProductPage() {
   const { productId } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -31,17 +33,12 @@ export default function ProductPage() {
   // Fonction pour ajouter au panier
   const addToCart = async () => {
     try {
-      await axios.post("http://localhost:3001/api/v1/cart/add", {
+      await api.post("/api/v1/cart/add", {
         productId: product.id,
         productName: product.name,
         price: product.price,
         quantity: 1,
-      }, {
-          auth: {
-            username: "admin", // remplace par ton login
-            password: "admin", // remplace par ton mot de passe
-          },
-        });
+      });
       alert("Produit ajouté au panier !");
     } catch (error) {
       console.error(error);

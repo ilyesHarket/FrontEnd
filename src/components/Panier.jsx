@@ -19,30 +19,27 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
-import axios from 'axios';
+import api from '../api';
+import { useAuth } from '../AuthContext';
 
 function Panier() {
   const [cartItems, setCartItems] = useState([]);
   const [total, setTotal] = useState(0);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-
-  const authConfig = {
-    auth: {
-      username: "admin",
-      password: "admin"
-    }
-  };
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
-    fetchCart();
-  }, []);
+    if (isAuthenticated) {
+      fetchCart();
+    }
+  }, [isAuthenticated]);
 
   const fetchCart = async () => {
     try {
       const [cartResponse, totalResponse] = await Promise.all([
-        axios.get('http://localhost:3001/api/v1/cart', authConfig),
-        axios.get('http://localhost:3001/api/v1/cart/total', authConfig)
+        api.get('/api/v1/cart'),
+        api.get('/api/v1/cart/total')
       ]);
       setCartItems(cartResponse.data);
       setTotal(totalResponse.data);
@@ -59,13 +56,10 @@ function Panier() {
       const item = cartItems.find(item => item.productId === productId);
       if (!item) return;
 
-      await axios.put('http://localhost:3001/api/v1/cart/update', 
-        {
-          productId: productId,
-          quantity: newQuantity
-        },
-        authConfig
-      );
+      await api.put('/api/v1/cart/update', {
+        productId: productId,
+        quantity: newQuantity
+      });
 
       setSuccess('Cart updated successfully');
       fetchCart();
@@ -77,10 +71,7 @@ function Panier() {
 
   const handleRemoveItem = async (productId) => {
     try {
-      await axios.delete(
-        `http://localhost:3001/api/v1/cart/remove?productId=${productId}`,
-        authConfig
-      );
+      await api.delete(`/api/v1/cart/remove?productId=${productId}`);
       setSuccess('Item removed successfully');
       fetchCart();
     } catch (error) {
