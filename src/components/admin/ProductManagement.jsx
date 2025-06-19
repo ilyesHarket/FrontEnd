@@ -23,7 +23,7 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import axios from 'axios';
+import axios from '../../api';
 
 function ProductManagement() {
   const [products, setProducts] = useState([]);
@@ -47,12 +47,7 @@ function ProductManagement() {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/api/v1/products/', {
-        auth: {
-          username: "admin",
-          password: "admin"
-        }
-      });
+      const response = await axios.get('/api/v1/products/');
       setProducts(response.data);
     } catch (error) {
       setError('Failed to fetch products');
@@ -62,12 +57,7 @@ function ProductManagement() {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/api/v1/categories/', {
-        auth: {
-          username: "admin",
-          password: "admin"
-        }
-      });
+      const response = await axios.get('/api/v1/categories/');
       setCategories(response.data);
     } catch (error) {
       setError('Failed to fetch categories');
@@ -81,7 +71,7 @@ function ProductManagement() {
     setSuccess('');
 
     try {
-      const response = await axios.post('http://localhost:3001/api/v1/products/', 
+      const response = await axios.post('/api/v1/products/', 
         {
           name: newProduct.name,
           description: newProduct.description,
@@ -90,12 +80,6 @@ function ProductManagement() {
             id: parseInt(newProduct.categoryId)
           }
         },
-        {
-          auth: {
-            username: "admin",
-            password: "admin"
-          }
-        }
       );
 
       setSuccess('Product created successfully');
@@ -116,7 +100,7 @@ function ProductManagement() {
     if (!editingProduct) return;
     
     try {
-      await axios.put(`http://localhost:3001/api/v1/products/${editingProduct.id}`, 
+      await axios.put(`/api/v1/products/${editingProduct.id}`, 
         {
           name: editingProduct.name,
           description: editingProduct.description,
@@ -125,12 +109,6 @@ function ProductManagement() {
             id: parseInt(editingProduct.categoryId)
           }
         },
-        {
-          auth: {
-            username: "admin",
-            password: "admin"
-          }
-        }
       );
 
       setSuccess('Product updated successfully');
@@ -146,12 +124,7 @@ function ProductManagement() {
     if (!productToDelete) return;
 
     try {
-      await axios.delete(`http://localhost:3001/api/v1/products/${productToDelete.id}`, {
-        auth: {
-          username: "admin",
-          password: "admin"
-        }
-      });
+      await axios.delete(`/api/v1/products/${productToDelete.id}`);
 
       setSuccess('Product deleted successfully');
       setDeleteConfirmOpen(false);

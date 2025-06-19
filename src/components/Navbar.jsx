@@ -12,7 +12,16 @@ const Navbar = () => {
         </Link>
       </div>
       <div className="navbar-center">
-        {/* Optionally, add navigation for USER here */}
+        {isAuthenticated && user?.role === "USER" && (
+          <>
+            <Link to="/categories" className="nav-link" style={{ marginRight: "1rem" }}>
+              Categories
+            </Link>
+            <Link to="/panier" className="nav-link">
+              Cart
+            </Link>
+          </>
+        )}
       </div>
       <div className="navbar-right">
         {!isAuthenticated && (

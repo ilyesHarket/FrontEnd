@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import api from "../api";
 
 export default function CategoryPage() {
   const [categories, setCategories] = useState([]);
@@ -9,16 +10,10 @@ export default function CategoryPage() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:3001/api/v1/categories/"
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch categories");
-        }
-        const data = await response.json();
-        setCategories(data);
+        const response = await api.get("/api/v1/categories/");
+        setCategories(response.data);
       } catch (err) {
-        setError(err.message);
+        setError(err.message || "Failed to fetch categories");
         console.error("Error fetching categories:", err);
       } finally {
         setLoading(false);

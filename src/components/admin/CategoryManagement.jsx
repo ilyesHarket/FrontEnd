@@ -19,7 +19,7 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import axios from 'axios';
+import axios from '../../api';
 
 function CategoryManagement() {
   const [categories, setCategories] = useState([]);
@@ -36,12 +36,7 @@ function CategoryManagement() {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/api/v1/categories/', {
-        auth: {
-          username: "admin",
-          password: "admin"
-        }
-      });
+      const response = await axios.get('http://localhost:3001/api/v1/categories/');
       setCategories(response.data);
     } catch (error) {
       setError('Failed to fetch categories');
@@ -57,12 +52,6 @@ function CategoryManagement() {
     try {
       await axios.post('http://localhost:3001/api/v1/categories/', 
         { name: newCategory },
-        {
-          auth: {
-            username: "admin",
-            password: "admin"
-          }
-        }
       );
 
       setSuccess('Category created successfully');
@@ -80,12 +69,6 @@ function CategoryManagement() {
     try {
       await axios.put(`http://localhost:3001/api/v1/categories/${editingCategory.id}`, 
         { name: editingCategory.name },
-        {
-          auth: {
-            username: "admin",
-            password: "admin"
-          }
-        }
       );
 
       setSuccess('Category updated successfully');
@@ -101,12 +84,7 @@ function CategoryManagement() {
     if (!categoryToDelete) return;
 
     try {
-      await axios.delete(`http://localhost:3001/api/v1/categories/${categoryToDelete.id}`, {
-        auth: {
-          username: "admin",
-          password: "admin"
-        }
-      });
+      await axios.delete(`http://localhost:3001/api/v1/categories/${categoryToDelete.id}`);
 
       setSuccess('Category deleted successfully');
       setDeleteConfirmOpen(false);

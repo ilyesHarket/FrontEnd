@@ -13,16 +13,10 @@ export default function ProductPage() {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await fetch(
-          `http://127.0.0.1:3001/api/v1/products/${productId}`
-        );
-        if (!response.ok) {
-          throw new Error("Product not found");
-        }
-        const data = await response.json();
-        setProduct(data);
+        const response = await api.get(`/api/v1/products/${productId}`);
+        setProduct(response.data);
       } catch (err) {
-        setError(err.message);
+        setError(err.message || "Product not found");
       } finally {
         setLoading(false);
       }

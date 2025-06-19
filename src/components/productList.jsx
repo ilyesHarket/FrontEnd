@@ -14,16 +14,10 @@ export default function ProductList() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:3001/api/v1/products/by-category/${id}`
-        );
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        setProducts(data);
+        const response = await api.get(`/api/v1/products/by-category/${id}`);
+        setProducts(response.data);
       } catch (err) {
-        setError(err.message);
+        setError(err.message || "Failed to fetch products");
         console.error("Error fetching products:", err);
         navigate("/categories");
       } finally {
