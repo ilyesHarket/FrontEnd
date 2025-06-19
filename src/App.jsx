@@ -9,25 +9,28 @@ import Register from "./Register";
 import Panier from "./components/Panier";
 import AdminPanel from "./components/AdminPanel";
 import "./App.css"; // CSS global (navbar, footer, produits, etc.)
+import { ProductsProvider, AuthProvider } from "./ProductsContext";
 
 function App() {
   return (
     <div className="app-root">
-      <Navbar />
-      <main>
-        <Routes>
-          <Route path="/" element={<CategoryPage />} />
-          <Route path="/categories" element={<CategoryPage />} />
-          <Route path="/category/:id/:name" element={<ProductList />} />
-          <Route path="/product/:productId" element={<ProductPage />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/panier" element={<Panier />} />
-          <Route path="/admin" element={<AdminPanel />} />
-          {/* Ajoute d'autres routes ici si besoin */}
-        </Routes>
-      </main>
-      <Footer />
+      <AuthProvider>
+        <Navbar />
+        <main>
+          <Routes>
+            <Route path="/" element={<CategoryPage />} />
+            <Route path="/categories" element={<CategoryPage />} />
+            <Route path="/category/:id/:name" element={<ProductList />} />
+            <Route path="/product/:productId" element={<ProductPage />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/panier" element={<Panier />} />
+            <Route path="/admin" element={<AdminPanel />} />
+            {/* Ajoute d'autres routes ici si besoin */}
+          </Routes>
+        </main>
+        <Footer />
+      </AuthProvider>
     </div>
   );
 }

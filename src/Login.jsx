@@ -1,31 +1,47 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.css"; // Assurez-vous d'avoir un fichier CSS pour le style
+import { useAuth } from "./ProductsContext";
 
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState(null);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage(null);
 
-    const url = `http://localhost:3001/api/v1/users/signin?Username=${encodeURIComponent(
-      username
-    )}&Password=${encodeURIComponent(password)}`;
-
     try {
-      const res = await fetch(url, {
+      const res = await fetch("http://localhost:3001/api/v1/users/signin", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          password,
+        }),
       });
+
+      const data = await res.json();
+
       if (res.ok) {
-        // Redirige vers la page d'accueil après succès
+        // Store auth data in context
+        login({
+          token: data.token,
+          username: data.username,
+          role: data.role,
+          userId: data.userId,
+          name: data.name,
+          email: data.email,
+        });
+        setMessage(null);
         navigate("/");
       } else {
-        const text = await res.text();
-        setMessage(text || "Erreur de connexion");
+        setMessage(data.message || "Erreur de connexion");
       }
     } catch (err) {
       console.error(err);
