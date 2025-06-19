@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "./AuthContext";
+import api from "./api";
+//import "./Login.css";
 
 export default function Register() {
   const [form, setForm] = useState({
@@ -13,6 +16,7 @@ export default function Register() {
   });
   const [message, setMessage] = useState(null);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -32,27 +36,40 @@ export default function Register() {
     }
 
     try {
-      const res = await fetch("http://localhost:3001/api/v1/users/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-      if (res.ok) {
+      const res = await api.post("/api/v1/users/signup", form);
+      const data = res.data;
+      // If backend returns auth data on signup, store it and redirect
+      if (data.token) {
+        login({
+          token: data.token,
+          username: data.username,
+          role: data.role,
+          userId: data.userId,
+          name: data.name,
+          email: data.email,
+        });
+        setMessage(null);
+        if (data.role === "ADMIN") {
+          navigate("/admin");
+        } else {
+          navigate("/categories");
+        }
+      } else {
         setMessage("Inscription réussie ! Redirection...");
         setTimeout(() => navigate("/login"), 1500);
-      } else {
-        const text = await res.text();
-        setMessage(text || "Erreur lors de l'inscription");
       }
     } catch (err) {
-      console.error(err);
-      setMessage("Erreur réseau");
+      if (err.response && err.response.data) {
+        setMessage(err.response.data.message || "Erreur lors de l'inscription");
+      } else {
+        setMessage("Erreur réseau");
+      }
     }
   };
 
   return (
-    <div className="register-container">
-      <form className="register-form" onSubmit={handleSubmit}>
+    <div className="login-container">
+      <form className="login-form" onSubmit={handleSubmit}>
         <h2>Inscription</h2>
         <input
           type="text"
@@ -94,6 +111,14 @@ export default function Register() {
           onChange={handleChange}
           required
         />
+        <input
+          type="text"
+          name="address"
+          placeholder="Adresse"
+          value={form.address}
+          onChange={handleChange}
+          required
+        />
         <div className="register-checkbox">
           <input
             type="checkbox"
@@ -104,14 +129,14 @@ export default function Register() {
             required
           />
           <label htmlFor="acceptCGU">
-            J'accepte les{" "}
+            J'accepte les {" "}
             <a href="/cgu" target="_blank" rel="noopener noreferrer">
               conditions d'utilisation
             </a>
           </label>
         </div>
         <button type="submit">S'inscrire</button>
-        {message && <div className="register-message">{message}</div>}
+        {message && <div className="login-message">{message}</div>}
       </form>
     </div>
   );

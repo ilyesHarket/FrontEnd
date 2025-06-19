@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.css"; // Assurez-vous d'avoir un fichier CSS pour le style
-import { useAuth } from "./ProductsContext";
+import { useAuth } from "./AuthContext";
+import api from "./api";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -15,37 +16,33 @@ export default function Login() {
     setMessage(null);
 
     try {
-      const res = await fetch("http://localhost:3001/api/v1/users/signin", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username,
-          password,
-        }),
+      const res = await api.post("/api/v1/users/signin", {
+        username,
+        password,
       });
+      const data = res.data;
+      login({
+        token: data.token,
+        username: data.username,
+        role: data.role,
+        userId: data.userId,
+        name: data.name,
+        email: data.email,
+      });
+      setMessage(null);
 
-      const data = await res.json();
-
-      if (res.ok) {
-        // Store auth data in context
-        login({
-          token: data.token,
-          username: data.username,
-          role: data.role,
-          userId: data.userId,
-          name: data.name,
-          email: data.email,
-        });
-        setMessage(null);
-        navigate("/");
+      // Handle role-based redirect
+      if (data.role === "ADMIN") {
+        navigate("/admin");
       } else {
-        setMessage(data.message || "Erreur de connexion");
+        navigate("/categories");
       }
     } catch (err) {
-      console.error(err);
-      setMessage("Erreur réseau");
+      if (err.response && err.response.data) {
+        setMessage(err.response.data.message || "Erreur de connexion");
+      } else {
+        setMessage("Erreur réseau");
+      }
     }
   };
 

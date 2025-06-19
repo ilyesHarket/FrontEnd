@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import CategoryPage from "./components/CategoryPage";
@@ -8,8 +8,10 @@ import Login from "./Login";
 import Register from "./Register";
 import Panier from "./components/Panier";
 import AdminPanel from "./components/AdminPanel";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Forbidden from "./components/Forbidden";
 import "./App.css"; // CSS global (navbar, footer, produits, etc.)
-import { ProductsProvider, AuthProvider } from "./ProductsContext";
+import { AuthProvider } from "./AuthContext";
 
 function App() {
   return (
@@ -18,15 +20,62 @@ function App() {
         <Navbar />
         <main>
           <Routes>
-            <Route path="/" element={<CategoryPage />} />
-            <Route path="/categories" element={<CategoryPage />} />
-            <Route path="/category/:id/:name" element={<ProductList />} />
-            <Route path="/product/:productId" element={<ProductPage />} />
+            {/* Public routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/panier" element={<Panier />} />
-            <Route path="/admin" element={<AdminPanel />} />
-            {/* Ajoute d'autres routes ici si besoin */}
+            <Route path="/forbidden" element={<Forbidden />} />
+            
+            {/* Default redirect */}
+            <Route path="/" element={<Navigate to="/login" replace />} />
+
+            {/* Admin-only routes */}
+            <Route 
+              path="/admin" 
+              element={
+                <ProtectedRoute 
+                  element={<AdminPanel />} 
+                  allowedRoles={["ADMIN"]} 
+                />
+              } 
+            />
+
+            {/* User-only routes */}
+            <Route 
+              path="/categories" 
+              element={
+                <ProtectedRoute 
+                  element={<CategoryPage />} 
+                  allowedRoles={["USER"]} 
+                />
+              } 
+            />
+            <Route 
+              path="/category/:id/:name" 
+              element={
+                <ProtectedRoute 
+                  element={<ProductList />} 
+                  allowedRoles={["USER"]} 
+                />
+              } 
+            />
+            <Route 
+              path="/product/:productId" 
+              element={
+                <ProtectedRoute 
+                  element={<ProductPage />} 
+                  allowedRoles={["USER"]} 
+                />
+              } 
+            />
+            <Route 
+              path="/panier" 
+              element={
+                <ProtectedRoute 
+                  element={<Panier />} 
+                  allowedRoles={["USER"]} 
+                />
+              } 
+            />
           </Routes>
         </main>
         <Footer />
